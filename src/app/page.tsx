@@ -1,63 +1,110 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Trophy, Heart } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen flex flex-col pt-16">
+      <header className="fixed top-0 w-full  z-50 px-6 py-4 flex justify-between items-center border-b-0 border-white/5 backdrop-blur-3xl bg-[#011006]/50">
+        <div className="flex items-center gap-2">
+          <Trophy className="w-6 h-6 text-primary" />
+          <span className="text-xl font-bold tracking-tighter">Swing&Win</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <nav className="flex gap-4 items-center">
+          <Link
+            href="/login"
+            className="text-sm font-medium hover:text-primary transition-colors"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Log in
+          </Link>
+          <Link
+            href="/signup"
+            className="text-sm font-medium bg-primary text-primary-foreground px-4 py-2 rounded-full neon-button"
           >
-            Documentation
-          </a>
+            Join Now
+          </Link>
+        </nav>
+      </header>
+
+      <main className="flex-1 flex flex-col items-center justify-center px-4 text-center mt-20 relative">
+        {/* Background glow effects */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="max-w-4xl space-y-8 relative">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-primary/20 text-primary text-sm font-medium mb-4">
+            <Heart className="w-4 h-4" />
+            <span>Play Golf. Win Big. Give Back.</span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter">
+            The Ultimate <br />
+            <span className="neon-text text-transparent bg-clip-text bg-linear-to-r from-primary to-emerald-400">
+              Golf Society
+            </span>
+          </h1>
+
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Record your Stableford scores, enter the monthly draw, and support
+            your favorite charities. An exclusive membership for golfers who
+            want more out of every round.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+            <Link
+              href="/signup"
+              className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold text-lg neon-button"
+            >
+              Get Started <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link
+              href="/about"
+              className="flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg glass hover:bg-white/10 transition-colors"
+            >
+              How it works
+            </Link>
+          </div>
+        </div>
+
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full mt-32 mb-20">
+          <div className="glass-panel p-8 rounded-2xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <Trophy className="w-8 h-8 text-primary mb-4" />
+            <h3 className="text-xl font-bold mb-2">Track Scores</h3>
+            <p className="text-muted-foreground">
+              Submit up to 5 of your latest Stableford scores to generate your
+              unique monthly lottery ticket.
+            </p>
+          </div>
+          <div className="glass-panel p-8 rounded-2xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <svg
+              className="w-8 h-8 text-primary mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <h3 className="text-xl font-bold mb-2">Win the Jackpot</h3>
+            <p className="text-muted-foreground">
+              Match 3, 4, or 5 numbers in our monthly draw to win huge cash
+              prizes from the community pool.
+            </p>
+          </div>
+          <div className="glass-panel p-8 rounded-2xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <Heart className="w-8 h-8 text-primary mb-4" />
+            <h3 className="text-xl font-bold mb-2">Give Back</h3>
+            <p className="text-muted-foreground">
+              At least 10% of your membership goes directly to the charity of
+              your choice. Play with purpose.
+            </p>
+          </div>
         </div>
       </main>
     </div>
