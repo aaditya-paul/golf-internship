@@ -1,16 +1,17 @@
-import { Resend } from 'resend'
+import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Use onboarding@resend.dev for free / unverified accounts.
 // Once you verify "swing-and-win.com" in your Resend dashboard,
 // change this to: 'Swing&Win <notifications@swing-and-win.com>'
-const FROM = process.env.RESEND_FROM_EMAIL ?? 'Swing&Win <onboarding@resend.dev>'
+const FROM =
+  process.env.RESEND_FROM_EMAIL ?? "Swing&Win <onboarding@resend.dev>";
 const DEFAULT_NOTIFICATION_EMAIL =
-  process.env.RESEND_DEFAULT_TO_EMAIL ?? process.env.DEFAULT_NOTIFICATION_EMAIL
+  process.env.RESEND_DEFAULT_TO_EMAIL ?? process.env.DEFAULT_NOTIFICATION_EMAIL;
 
 async function sendViaResend(to: string, subject: string, html: string) {
-  return resend.emails.send({ from: FROM, to, subject, html })
+  return resend.emails.send({ from: FROM, to, subject, html });
 }
 
 export async function sendEmail({
@@ -19,36 +20,51 @@ export async function sendEmail({
   html,
   ensureDefaultRecipient,
 }: {
-  to: string
-  subject: string
-  html: string
-  ensureDefaultRecipient?: boolean
+  to: string;
+  subject: string;
+  html: string;
+  ensureDefaultRecipient?: boolean;
 }) {
   if (!process.env.RESEND_API_KEY) {
-    console.warn('[Email] RESEND_API_KEY not set — skipping email send.')
-    return
+    console.warn("[Email] RESEND_API_KEY not set — skipping email send.");
+    return;
   }
 
-  const fallbackEmail = DEFAULT_NOTIFICATION_EMAIL?.trim()
+  const fallbackEmail = DEFAULT_NOTIFICATION_EMAIL?.trim();
 
   try {
-    const result = await sendViaResend(to, subject, html)
-    console.log('[Email] Sent to', to, '— id:', result.data?.id ?? 'unknown')
+    const result = await sendViaResend(to, subject, html);
+    console.log("[Email] Sent to", to, "— id:", result.data?.id ?? "unknown");
 
     // Optional mirrored delivery so at least your default inbox receives notifications.
     if (ensureDefaultRecipient && fallbackEmail && fallbackEmail !== to) {
-      const copy = await sendViaResend(fallbackEmail, subject, html)
-      console.log('[Email] Mirrored to default inbox', fallbackEmail, '— id:', copy.data?.id ?? 'unknown')
+      const copy = await sendViaResend(fallbackEmail, subject, html);
+      console.log(
+        "[Email] Mirrored to default inbox",
+        fallbackEmail,
+        "— id:",
+        copy.data?.id ?? "unknown",
+      );
     }
   } catch (err) {
-    console.error('[Email] Failed to send email to', to, ':', err)
+    console.error("[Email] Failed to send email to", to, ":", err);
 
     if (ensureDefaultRecipient && fallbackEmail) {
       try {
-        const rescue = await sendViaResend(fallbackEmail, subject, html)
-        console.log('[Email] Fallback delivered to default inbox', fallbackEmail, '— id:', rescue.data?.id ?? 'unknown')
+        const rescue = await sendViaResend(fallbackEmail, subject, html);
+        console.log(
+          "[Email] Fallback delivered to default inbox",
+          fallbackEmail,
+          "— id:",
+          rescue.data?.id ?? "unknown",
+        );
       } catch (fallbackErr) {
-        console.error('[Email] Fallback delivery failed for', fallbackEmail, ':', fallbackErr)
+        console.error(
+          "[Email] Fallback delivery failed for",
+          fallbackEmail,
+          ":",
+          fallbackErr,
+        );
       }
     }
   }
@@ -57,14 +73,15 @@ export async function sendEmail({
 // ─── Templates ──────────────────────────────
 
 export function drawResultEmail(params: {
-  winningNumbers: number[]
-  monthLabel: string
-  didWin: boolean
-  tier?: number
-  prize?: number
-  ticketNumbers?: number[]
+  winningNumbers: number[];
+  monthLabel: string;
+  didWin: boolean;
+  tier?: number;
+  prize?: number;
+  ticketNumbers?: number[];
 }) {
-  const { winningNumbers, monthLabel, didWin, tier, prize, ticketNumbers } = params
+  const { winningNumbers, monthLabel, didWin, tier, prize, ticketNumbers } =
+    params;
 
   if (didWin) {
     return {
@@ -81,8 +98,8 @@ export function drawResultEmail(params: {
               <p style="margin:0 0 8px;font-size:13px;opacity:.6">Prize Amount</p>
               <p style="margin:0;font-size:36px;font-weight:bold;color:#14c846">$${prize?.toFixed(2)}</p>
             </div>
-            <p style="font-size:13px;opacity:.7">Winning numbers: <strong>${winningNumbers.join(' · ')}</strong></p>
-            <p style="font-size:13px;opacity:.7">Your ticket: <strong>${ticketNumbers?.join(' · ')}</strong></p>
+            <p style="font-size:13px;opacity:.7">Winning numbers: <strong>${winningNumbers.join(" · ")}</strong></p>
+            <p style="font-size:13px;opacity:.7">Your ticket: <strong>${ticketNumbers?.join(" · ")}</strong></p>
             <p>Our admin team will verify your score history and process your payout shortly. You'll receive another email once it's approved.</p>
             <div style="text-align:center;margin:32px 0">
               <a href="${process.env.NEXT_PUBLIC_SITE_URL}/dashboard" 
@@ -93,7 +110,7 @@ export function drawResultEmail(params: {
           </div>
         </div>
       `,
-    }
+    };
   }
 
   return {
@@ -108,9 +125,9 @@ export function drawResultEmail(params: {
           <p>The ${monthLabel} draw has been completed. Unfortunately your ticket didn't match enough numbers this time.</p>
           <div style="background:#0f1117;border-radius:8px;padding:16px;margin:20px 0">
             <p style="font-size:13px;margin:0 0 8px;opacity:.6">Winning Numbers</p>
-            <p style="margin:0;font-weight:bold;font-size:18px;color:#14c846">${winningNumbers.join(' · ')}</p>
+            <p style="margin:0;font-weight:bold;font-size:18px;color:#14c846">${winningNumbers.join(" · ")}</p>
           </div>
-          ${ticketNumbers ? `<p style="font-size:13px;opacity:.7">Your ticket: ${ticketNumbers.join(' · ')}</p>` : ''}
+          ${ticketNumbers ? `<p style="font-size:13px;opacity:.7">Your ticket: ${ticketNumbers.join(" · ")}</p>` : ""}
           <p>Keep submitting your scores — next month's draw could be yours!</p>
           <div style="text-align:center;margin:32px 0">
             <a href="${process.env.NEXT_PUBLIC_SITE_URL}/dashboard" 
@@ -121,10 +138,13 @@ export function drawResultEmail(params: {
         </div>
       </div>
     `,
-  }
+  };
 }
 
-export function payoutApprovedEmail(params: { prize: number; monthLabel: string }) {
+export function payoutApprovedEmail(params: {
+  prize: number;
+  monthLabel: string;
+}) {
   return {
     subject: `✅ Your Payout Has Been Approved – Swing&Win`,
     html: `
@@ -148,5 +168,5 @@ export function payoutApprovedEmail(params: { prize: number; monthLabel: string 
         </div>
       </div>
     `,
-  }
+  };
 }

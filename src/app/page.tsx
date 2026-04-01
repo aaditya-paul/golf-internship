@@ -7,7 +7,9 @@ export default function Home() {
       <header className="fixed top-0 w-full z-50 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center border-b-0 border-white/5 backdrop-blur-3xl bg-[#011006]/50">
         <div className="flex items-center gap-2">
           <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-          <span className="text-lg sm:text-xl font-bold tracking-tighter">Swing&Win</span>
+          <span className="text-lg sm:text-xl font-bold tracking-tighter">
+            Swing&Win
+          </span>
         </div>
         <nav className="flex gap-2 sm:gap-4 items-center">
           <Link

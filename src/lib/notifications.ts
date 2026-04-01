@@ -1,19 +1,24 @@
-import type { SupabaseClient } from '@supabase/supabase-js'
-import { sendEmail } from './email'
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { sendEmail } from "./email";
 
 type NotificationPayload = {
-  user_id: string
-  title: string
-  message: string
-  ctaUrl?: string
-  ctaLabel?: string
-}
+  user_id: string;
+  title: string;
+  message: string;
+  ctaUrl?: string;
+  ctaLabel?: string;
+};
 
 // Generic notification email template
-function notificationEmail(params: { title: string; message: string; ctaUrl?: string; ctaLabel?: string }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? ''
-  const ctaUrl = params.ctaUrl ?? `${siteUrl}/dashboard`
-  const ctaLabel = params.ctaLabel ?? 'Open Dashboard'
+function notificationEmail(params: {
+  title: string;
+  message: string;
+  ctaUrl?: string;
+  ctaLabel?: string;
+}) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const ctaUrl = params.ctaUrl ?? `${siteUrl}/dashboard`;
+  const ctaLabel = params.ctaLabel ?? "Open Dashboard";
 
   return {
     subject: `${params.title} – Swing&Win`,
@@ -38,7 +43,7 @@ function notificationEmail(params: { title: string; message: string; ctaUrl?: st
         </div>
       </div>
     `,
-  }
+  };
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -49,19 +54,30 @@ export async function sendNotification(
   userId: string,
   title: string,
   message: string,
-  opts?: { ctaUrl?: string; ctaLabel?: string }
+  opts?: { ctaUrl?: string; ctaLabel?: string },
 ) {
-  await supabase.from('notifications').insert({ user_id: userId, title, message })
+  await supabase
+    .from("notifications")
+    .insert({ user_id: userId, title, message });
 
   const { data: profile } = await supabase
-    .from('profiles')
-    .select('email')
-    .eq('id', userId)
-    .single()
+    .from("profiles")
+    .select("email")
+    .eq("id", userId)
+    .single();
 
   if (profile?.email) {
-    const tpl = notificationEmail({ title, message, ctaUrl: opts?.ctaUrl, ctaLabel: opts?.ctaLabel })
-    await sendEmail({ to: profile.email, ...tpl, ensureDefaultRecipient: true })
+    const tpl = notificationEmail({
+      title,
+      message,
+      ctaUrl: opts?.ctaUrl,
+      ctaLabel: opts?.ctaLabel,
+    });
+    await sendEmail({
+      to: profile.email,
+      ...tpl,
+      ensureDefaultRecipient: true,
+    });
   }
 }
 
@@ -71,26 +87,31 @@ export async function sendNotification(
 export async function sendBulkNotifications(
   supabase: SupabaseClient,
   notifications: NotificationPayload[],
-  emailByUserId: Record<string, string>
+  emailByUserId: Record<string, string>,
 ) {
-  if (notifications.length === 0) return
+  if (notifications.length === 0) return;
 
   // Insert only the DB columns (strip ctaUrl/ctaLabel which are email-only)
-  await supabase.from('notifications').insert(
-    notifications.map(n => ({
+  await supabase.from("notifications").insert(
+    notifications.map((n) => ({
       user_id: n.user_id,
       title: n.title,
       message: n.message,
-    }))
-  )
+    })),
+  );
 
   // Fire all emails concurrently
   await Promise.allSettled(
-    notifications.map(n => {
-      const email = emailByUserId[n.user_id]
-      if (!email) return Promise.resolve()
-      const tpl = notificationEmail({ title: n.title, message: n.message, ctaUrl: n.ctaUrl, ctaLabel: n.ctaLabel })
-      return sendEmail({ to: email, ...tpl, ensureDefaultRecipient: true })
-    })
-  )
+    notifications.map((n) => {
+      const email = emailByUserId[n.user_id];
+      if (!email) return Promise.resolve();
+      const tpl = notificationEmail({
+        title: n.title,
+        message: n.message,
+        ctaUrl: n.ctaUrl,
+        ctaLabel: n.ctaLabel,
+      });
+      return sendEmail({ to: email, ...tpl, ensureDefaultRecipient: true });
+    }),
+  );
 }

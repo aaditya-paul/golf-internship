@@ -10,13 +10,17 @@
   --color-muted: #1a1a1a;
   --color-muted-foreground: #a3a3a3;
   --color-border: #262626;
-  
+
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
-  
-  --background-image-glow: radial-gradient(circle at 50% -20%, rgba(20, 200, 70, 0.15), transparent 60%);
+
+  --background-image-glow: radial-gradient(
+    circle at 50% -20%,
+    rgba(20, 200, 70, 0.15),
+    transparent 60%
+  );
 }
 
 @layer base {
@@ -48,14 +52,16 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
   }
-  
+
   .glass-input {
     background-color: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
-  
+
   .glass-input:focus {
     outline: none;
     border-color: var(--color-primary);
@@ -63,14 +69,16 @@
   }
 
   .neon-text {
-    text-shadow: 0 0 10px rgba(20, 200, 70, 0.5), 0 0 20px rgba(20, 200, 70, 0.3);
+    text-shadow:
+      0 0 10px rgba(20, 200, 70, 0.5),
+      0 0 20px rgba(20, 200, 70, 0.3);
   }
 
   .neon-button {
     box-shadow: 0 0 15px rgba(20, 200, 70, 0.15);
     transition: all 0.2s ease;
   }
-  
+
   .neon-button:hover {
     box-shadow: 0 0 25px rgba(20, 200, 70, 0.4);
     transform: translateY(-1px);
