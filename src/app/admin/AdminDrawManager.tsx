@@ -128,7 +128,9 @@ export default function AdminDrawManager({
               <p className="font-bold text-lg">{poolData.activeSubs}</p>
             </div>
             <div className="bg-black/30 p-3 rounded-xl">
-              <p className="text-muted-foreground text-xs mb-1">Price / Sub</p>
+              <p className="text-muted-foreground text-xs mb-1">
+                Avg Revenue / Sub (Monthly)
+              </p>
               <p className="font-bold text-lg">
                 ${poolData.pricePerSub.toFixed(2)}
               </p>
@@ -156,25 +158,40 @@ export default function AdminDrawManager({
         ) : null}
 
         {poolData && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-center">
-            {([5, 4, 3] as const).map((tier) => (
-              <div
-                key={tier}
-                className="bg-white/5 rounded-lg p-2 border border-white/5"
-              >
-                <p className="text-muted-foreground">Match {tier}</p>
-                <p className="font-bold text-white">
-                  {tier === 5 ? "40%" : tier === 4 ? "35%" : "25%"}
-                </p>
-                <p className="text-primary">
-                  $
-                  {(
-                    poolData.finalPool *
-                    (tier === 5 ? 0.4 : tier === 4 ? 0.35 : 0.25)
-                  ).toFixed(2)}
-                </p>
-              </div>
-            ))}
+          <div className="space-y-3">
+            <div className="text-xs text-muted-foreground bg-white/5 rounded-lg p-3 border border-white/5">
+              <span className="font-medium text-white">Plan Mix:</span>{" "}
+              {poolData.monthlySubs} monthly
+              {poolData.monthlyPrice > 0
+                ? ` ($${poolData.monthlyPrice.toFixed(2)}/mo)`
+                : ""}
+              {" · "}
+              {poolData.yearlySubs} yearly
+              {poolData.yearlyPrice > 0
+                ? ` ($${poolData.yearlyPrice.toFixed(2)}/yr ≈ $${(poolData.yearlyPrice / 12).toFixed(2)}/mo)`
+                : ""}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-center">
+              {([5, 4, 3] as const).map((tier) => (
+                <div
+                  key={tier}
+                  className="bg-white/5 rounded-lg p-2 border border-white/5"
+                >
+                  <p className="text-muted-foreground">Match {tier}</p>
+                  <p className="font-bold text-white">
+                    {tier === 5 ? "40%" : tier === 4 ? "35%" : "25%"}
+                  </p>
+                  <p className="text-primary">
+                    $
+                    {(
+                      poolData.finalPool *
+                      (tier === 5 ? 0.4 : tier === 4 ? 0.35 : 0.25)
+                    ).toFixed(2)}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

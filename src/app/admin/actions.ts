@@ -19,6 +19,10 @@ export async function calculatePrizePool(): Promise<{
   activeSubs: number
   pricePerSub: number
   totalRevenue: number
+  monthlySubs: number
+  yearlySubs: number
+  monthlyPrice: number
+  yearlyPrice: number
   drawAllocation: number
   basePool: number
   carryover: number
@@ -26,20 +30,78 @@ export async function calculatePrizePool(): Promise<{
 }> {
   const supabase = await createClient()
 
-  const { count: activeSubs } = await supabase
-    .from('profiles')
-    .select('*', { count: 'exact', head: true })
-    .in('subscription_status', ['active', 'trialing'])
+  const monthlyPriceId = process.env.STRIPE_MONTHLY_PRICE_ID
+  const yearlyPriceId = process.env.STRIPE_YEARLY_PRICE_ID
 
-  let pricePerSub = 0
+  let monthlyPrice = 0
+  let yearlyPrice = 0
+
   try {
-    if (process.env.STRIPE_MONTHLY_PRICE_ID) {
-      const price = await stripe.prices.retrieve(process.env.STRIPE_MONTHLY_PRICE_ID)
-      pricePerSub = (price.unit_amount ?? 0) / 100
-    }
-  } catch {}
+    const [monthly, yearly] = await Promise.all([
+      monthlyPriceId ? stripe.prices.retrieve(monthlyPriceId) : Promise.resolve(null),
+      yearlyPriceId ? stripe.prices.retrieve(yearlyPriceId) : Promise.resolve(null),
+    ])
+    monthlyPrice = monthly ? (monthly.unit_amount ?? 0) / 100 : 0
+    yearlyPrice = yearly ? (yearly.unit_amount ?? 0) / 100 : 0
+  } catch {
+    // Fall back to whatever Stripe subscription pricing provides below.
+  }
 
-  const totalRevenue = (activeSubs || 0) * pricePerSub
+  let monthlySubs = 0
+  let yearlySubs = 0
+  let totalRevenue = 0
+
+  try {
+    const subscriptions = stripe.subscriptions.list({ status: 'all', limit: 100 })
+    await subscriptions.autoPagingEach(async (subscription) => {
+      if (subscription.status !== 'active' && subscription.status !== 'trialing') return true
+
+      const item = subscription.items.data[0]
+      const price = item?.price
+      if (!price) return true
+
+      const unitAmount = (price.unit_amount ?? 0) / 100
+      const interval = price.recurring?.interval
+      const intervalCount = price.recurring?.interval_count ?? 1
+
+      if (yearlyPriceId && price.id === yearlyPriceId) {
+        yearlySubs += 1
+        totalRevenue += (unitAmount || yearlyPrice) / 12
+        return true
+      }
+
+      if (monthlyPriceId && price.id === monthlyPriceId) {
+        monthlySubs += 1
+        totalRevenue += unitAmount || monthlyPrice
+        return true
+      }
+
+      if (interval === 'year') {
+        yearlySubs += 1
+        totalRevenue += unitAmount / (intervalCount * 12)
+      } else if (interval === 'month') {
+        monthlySubs += 1
+        totalRevenue += unitAmount / intervalCount
+      } else {
+        monthlySubs += 1
+        totalRevenue += unitAmount
+      }
+      return true
+    })
+  } catch {
+    // Fallback to profile count if Stripe subscriptions cannot be listed.
+    const { count: fallbackActiveSubs } = await supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+      .in('subscription_status', ['active', 'trialing'])
+
+    monthlySubs = fallbackActiveSubs || 0
+    yearlySubs = 0
+    totalRevenue = (fallbackActiveSubs || 0) * monthlyPrice
+  }
+
+  const activeSubs = monthlySubs + yearlySubs
+  const pricePerSub = activeSubs > 0 ? totalRevenue / activeSubs : 0
   const basePool = totalRevenue * DRAW_ALLOCATION_PCT
 
   const { data: lastDraw } = await supabase
@@ -55,9 +117,13 @@ export async function calculatePrizePool(): Promise<{
   const finalPool = basePool + carryover
 
   return {
-    activeSubs: activeSubs || 0,
+    activeSubs,
     pricePerSub,
     totalRevenue,
+    monthlySubs,
+    yearlySubs,
+    monthlyPrice,
+    yearlyPrice,
     drawAllocation: DRAW_ALLOCATION_PCT,
     basePool,
     carryover,
