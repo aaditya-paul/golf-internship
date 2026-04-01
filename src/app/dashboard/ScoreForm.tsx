@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Info } from 'lucide-react'
+import { Info, Loader2 } from 'lucide-react'
 import { addScore } from './actions'
 
 export default function ScoreForm({ currentScoresCount }: { currentScoresCount: number }) {
@@ -13,10 +13,15 @@ export default function ScoreForm({ currentScoresCount }: { currentScoresCount: 
     if (isLocked) return
     setLoading(true)
     setError(null)
-    const result = await addScore(formData)
-    setLoading(false)
-    if (result?.error) {
-      setError(result.error)
+    try {
+      const result = await addScore(formData)
+      if (result?.error) {
+        setError(result.error)
+      }
+    } catch {
+      setError('Failed to add score. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -54,9 +59,10 @@ export default function ScoreForm({ currentScoresCount }: { currentScoresCount: 
         <button 
           type="submit" 
           disabled={loading || isLocked}
-          className="bg-primary text-primary-foreground font-semibold px-6 py-2 rounded-lg neon-button disabled:opacity-50 disabled:grayscale transition-all"
+          className="bg-primary text-primary-foreground font-semibold px-6 py-2 rounded-lg neon-button disabled:opacity-50 disabled:grayscale transition-all inline-flex items-center justify-center gap-2"
         >
-          {loading ? 'Adding...' : 'Add'}
+          {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+          {loading ? 'Adding score...' : 'Add'}
         </button>
       </form>
       

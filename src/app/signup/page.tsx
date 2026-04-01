@@ -1,6 +1,7 @@
 import { signup } from '../login/actions'
 import Link from 'next/link'
 import { AlertCircle } from 'lucide-react'
+import AuthSubmitButton from '@/components/AuthSubmitButton'
 
 export default async function SignupPage({
   searchParams,
@@ -62,12 +63,7 @@ export default async function SignupPage({
               </div>
             )}
 
-            <button
-              type="submit"
-              className="w-full py-3 mt-4 bg-primary text-primary-foreground font-semibold rounded-lg neon-button"
-            >
-              Sign Up
-            </button>
+            <AuthSubmitButton idleText="Sign Up" pendingText="Creating account..." />
           </form>
 
           <p className="relative text-center text-sm text-muted-foreground mt-8">

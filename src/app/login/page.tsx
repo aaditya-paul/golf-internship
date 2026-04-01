@@ -1,6 +1,7 @@
 import { login } from './actions'
 import Link from 'next/link'
 import { AlertCircle } from 'lucide-react'
+import AuthSubmitButton from '@/components/AuthSubmitButton'
 
 export default async function LoginPage({
   searchParams,
@@ -62,12 +63,7 @@ export default async function LoginPage({
               </div>
             )}
 
-            <button
-              type="submit"
-              className="w-full py-3 mt-4 bg-primary text-primary-foreground font-semibold rounded-lg neon-button"
-            >
-              Sign In
-            </button>
+            <AuthSubmitButton idleText="Sign In" pendingText="Signing in..." />
           </form>
 
           <p className="relative text-center text-sm text-muted-foreground mt-8">

@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { User, LogOut, Settings, Trophy } from "lucide-react";
+import { User, Trophy } from "lucide-react";
+import SignOutButton from "./SignOutButton";
 
 export default async function DashboardLayout({
   children,
@@ -38,12 +39,7 @@ export default async function DashboardLayout({
             </div>
 
             <form action="/auth/signout" method="POST">
-              <button
-                className="p-2 rounded-full hover:bg-white/10 transition-colors text-muted-foreground hover:text-red-400"
-                title="Sign Out"
-              >
-                <LogOut className="w-5 h-5" />
-              </button>
+              <SignOutButton />
             </form>
           </div>
         </div>
