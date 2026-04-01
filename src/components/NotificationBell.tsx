@@ -44,7 +44,6 @@ export default function NotificationBell({
   const [notifications, setNotifications] = useState(initialNotifications);
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const hasCompletedInitialSyncRef = useRef(false);
   const seenNotificationIdsRef = useRef(
     new Set(initialNotifications.map((notification) => notification.id)),
   );
@@ -72,12 +71,28 @@ export default function NotificationBell({
   const fetchLatestNotifications = useCallback(async () => {
     if (!userId) return;
 
-    const { data, error } = await supabase
+    const primaryResult = await supabase
       .from("notifications")
       .select("id,title,message,read,created_at,cta_url,cta_label")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20);
+
+    let data = primaryResult.data as Notification[] | null;
+    let error = primaryResult.error;
+
+    // Backward compatibility: if CTA columns are not in DB yet, retry without them.
+    if (error && /cta_(url|label)/i.test(error.message)) {
+      const fallbackResult = await supabase
+        .from("notifications")
+        .select("id,title,message,read,created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      data = fallbackResult.data as Notification[] | null;
+      error = fallbackResult.error;
+    }
 
     if (!error && data) {
       const newUnreadNotifications = data.filter(
@@ -92,13 +107,11 @@ export default function NotificationBell({
         seenNotificationIdsRef.current.add(notification.id);
       }
 
-      if (hasCompletedInitialSyncRef.current) {
-        for (const notification of newUnreadNotifications) {
-          showToastForNotification(notification);
-        }
-      } else {
-        hasCompletedInitialSyncRef.current = true;
+      for (const notification of newUnreadNotifications) {
+        showToastForNotification(notification);
       }
+    } else if (error) {
+      console.error("Failed to load live notifications", error.message);
     }
   }, [showToastForNotification, supabase, userId]);
 
@@ -107,7 +120,6 @@ export default function NotificationBell({
     seenNotificationIdsRef.current = new Set(
       initialNotifications.map((notification) => notification.id),
     );
-    hasCompletedInitialSyncRef.current = false;
   }, [initialNotifications]);
 
   useEffect(() => {
