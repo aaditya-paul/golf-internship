@@ -1,14 +1,14 @@
-import { login } from './actions'
-import Link from 'next/link'
-import { AlertCircle } from 'lucide-react'
-import AuthSubmitButton from '@/components/AuthSubmitButton'
+import { login } from "./actions";
+import Link from "next/link";
+import { AlertCircle } from "lucide-react";
+import AuthSubmitButton from "@/components/AuthSubmitButton";
 
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; message?: string }>
+  searchParams: Promise<{ error?: string; message?: string }>;
 }) {
-  const { error, message } = await searchParams
+  const { error, message } = await searchParams;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -16,15 +16,22 @@ export default async function LoginPage({
         <div className="glass rounded-2xl p-8 space-y-8 relative overflow-hidden">
           {/* Decorative glow */}
           <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl" />
-          
+
           <div className="relative text-center space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight neon-text">Welcome Back</h1>
-            <p className="text-muted-foreground">Log in to enter your scores and track the monthly draw.</p>
+            <h1 className="text-3xl font-bold tracking-tight neon-text">
+              Welcome Back
+            </h1>
+            <p className="text-muted-foreground">
+              Log in to enter your scores and track the monthly draw.
+            </p>
           </div>
 
           <form action={login} className="relative space-y-4">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground/80">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-foreground/80"
+              >
                 Email
               </label>
               <input
@@ -36,9 +43,12 @@ export default async function LoginPage({
                 className="w-full px-4 py-3 rounded-lg glass-input text-foreground placeholder:text-muted-foreground"
               />
             </div>
-            
+
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-foreground/80">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-foreground/80"
+              >
                 Password
               </label>
               <input
@@ -67,13 +77,16 @@ export default async function LoginPage({
           </form>
 
           <p className="relative text-center text-sm text-muted-foreground mt-8">
-            Don't have an account?{' '}
-            <Link href="/signup" className="text-primary hover:underline font-medium">
+            Don't have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-primary hover:underline font-medium"
+            >
               Join the club
             </Link>
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

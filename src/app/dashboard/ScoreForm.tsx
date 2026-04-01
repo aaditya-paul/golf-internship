@@ -1,27 +1,31 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Info, Loader2 } from 'lucide-react'
-import { addScore } from './actions'
+import { useState } from "react";
+import { Info, Loader2 } from "lucide-react";
+import { addScore } from "./actions";
 
-export default function ScoreForm({ currentScoresCount }: { currentScoresCount: number }) {
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const isLocked = currentScoresCount >= 5
+export default function ScoreForm({
+  currentScoresCount,
+}: {
+  currentScoresCount: number;
+}) {
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const isLocked = currentScoresCount >= 5;
 
   async function handleSubmit(formData: FormData) {
-    if (isLocked) return
-    setLoading(true)
-    setError(null)
+    if (isLocked) return;
+    setLoading(true);
+    setError(null);
     try {
-      const result = await addScore(formData)
+      const result = await addScore(formData);
       if (result?.error) {
-        setError(result.error)
+        setError(result.error);
       }
     } catch {
-      setError('Failed to add score. Please try again.')
+      setError("Failed to add score. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -32,43 +36,52 @@ export default function ScoreForm({ currentScoresCount }: { currentScoresCount: 
           <Info className="w-4 h-4" /> How to Play
         </h3>
         <ul className="text-sm text-muted-foreground space-y-1.5 list-disc pl-5">
-          <li>Enter your <strong>18-hole Stableford scores</strong> after each round you play.</li>
-          <li>Scores must be between <strong>1 and 45 points</strong>.</li>
-          <li>Your latest 5 distinct scores automatically generate your <strong>monthly jackpot ticket</strong>.</li>
-          <li className="text-red-300">Once you enter 5 scores, they are <strong>locked for the month</strong> and cannot be changed.</li>
+          <li>
+            Enter your <strong>18-hole Stableford scores</strong> after each
+            round you play.
+          </li>
+          <li>
+            Scores must be between <strong>1 and 45 points</strong>.
+          </li>
+          <li>
+            Your latest 5 distinct scores automatically generate your{" "}
+            <strong>monthly jackpot ticket</strong>.
+          </li>
+          <li className="text-red-300">
+            Once you enter 5 scores, they are{" "}
+            <strong>locked for the month</strong> and cannot be changed.
+          </li>
         </ul>
       </div>
-      
+
       {isLocked && (
-         <div className="bg-red-500/10 border border-red-500/20 text-red-300 p-3 rounded-lg text-sm font-semibold flex items-center justify-center">
-            🔒 You have filled all 5 tickets for this draw. Changes are locked.
-         </div>
+        <div className="bg-red-500/10 border border-red-500/20 text-red-300 p-3 rounded-lg text-sm font-semibold flex items-center justify-center">
+          🔒 You have filled all 5 tickets for this draw. Changes are locked.
+        </div>
       )}
 
       <form action={handleSubmit} className="flex gap-2">
-        <input 
-          type="number" 
+        <input
+          type="number"
           name="score"
-          min="1" 
-          max="45" 
-          placeholder="Score (1-45)" 
+          min="1"
+          max="45"
+          placeholder="Score (1-45)"
           required
           className="flex-1 bg-black/50 border border-white/10 rounded-lg px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 text-white"
           disabled={loading || isLocked}
         />
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={loading || isLocked}
           className="bg-primary text-primary-foreground font-semibold px-6 py-2 rounded-lg neon-button disabled:opacity-50 disabled:grayscale transition-all inline-flex items-center justify-center gap-2"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-          {loading ? 'Adding score...' : 'Add'}
+          {loading ? "Adding score..." : "Add"}
         </button>
       </form>
-      
-      {error && (
-        <p className="text-red-400 text-sm mt-2">{error}</p>
-      )}
+
+      {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
     </div>
-  )
+  );
 }
