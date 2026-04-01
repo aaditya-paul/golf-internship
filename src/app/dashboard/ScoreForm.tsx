@@ -1,26 +1,24 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { Info, Loader2 } from "lucide-react";
 import { addScore } from "./actions";
 
 export default function ScoreForm({
   currentScoresCount,
+  onScoreAdded,
 }: {
   currentScoresCount: number;
+  onScoreAdded?: () => void | Promise<void>;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
-  const router = useRouter();
   const isLocked = currentScoresCount >= 5;
-  const isSubmitting = loading || isPending;
+  const isSubmitting = loading;
 
   async function handleSubmit(formData: FormData) {
     if (isLocked) return;
-    setLoading(true);
     setError(null);
     try {
       const result = await addScore(formData);
@@ -28,15 +26,23 @@ export default function ScoreForm({
         setError(result.error);
       } else {
         formRef.current?.reset();
-        startTransition(() => {
-          router.refresh();
-        });
+        if (onScoreAdded) {
+          await onScoreAdded();
+        }
       }
     } catch {
       setError("Failed to add score. Please try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (isLocked || loading) return;
+    setLoading(true);
+    const formData = new FormData(event.currentTarget);
+    void handleSubmit(formData);
   }
 
   return (
@@ -72,7 +78,8 @@ export default function ScoreForm({
 
       <form
         ref={formRef}
-        action={handleSubmit}
+        onSubmit={handleFormSubmit}
+        onInvalidCapture={() => setLoading(false)}
         className="flex gap-2"
         aria-busy={isSubmitting}
       >
@@ -88,6 +95,11 @@ export default function ScoreForm({
         />
         <button
           type="submit"
+          onClick={() => {
+            if (!isLocked && !loading) {
+              setLoading(true);
+            }
+          }}
           disabled={isSubmitting || isLocked}
           className="bg-primary text-primary-foreground font-semibold px-6 py-2 rounded-lg neon-button disabled:opacity-50 disabled:grayscale transition-all inline-flex items-center justify-center gap-2"
         >

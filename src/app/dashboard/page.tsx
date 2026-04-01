@@ -10,10 +10,16 @@ import {
 import { redirect } from "next/navigation";
 import { stripe } from "@/lib/stripe/server";
 import { createClient } from "@/lib/supabase/server";
-import ScoreForm from "./ScoreForm";
+import ScoresPanel from "./ScoresPanel";
 import SubscribeButton from "./SubscribeButton";
 import ManageBillingButton from "./ManageBillingButton";
 import NotificationBell from "@/components/NotificationBell";
+
+type Score = {
+  id: string;
+  score: number;
+  created_at: string;
+};
 
 export default async function DashboardPage({
   searchParams,
@@ -58,7 +64,7 @@ export default async function DashboardPage({
   let subscriptionPlan: string | null = null;
   let charityPerc = 10;
   let charityName = "Pending Selection...";
-  let scores: any[] = [];
+  let scores: Score[] = [];
   let notifications: any[] = [];
 
   if (user) {
@@ -89,12 +95,6 @@ export default async function DashboardPage({
       .order("created_at", { ascending: false })
       .limit(20);
     notifications = notifs || [];
-  }
-
-  // Create empty slots for display
-  const displayScores = [...scores];
-  while (displayScores.length < 5) {
-    displayScores.push(null);
   }
 
   return (
@@ -139,29 +139,7 @@ export default async function DashboardPage({
             <h2 className="text-xl font-semibold">Your Scores</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            <ScoreForm currentScoresCount={scores.length} />
-
-            <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-              <h3 className="text-sm font-medium mb-3">
-                Current Ticket (
-                <span className="text-primary font-bold">
-                  {scores.length}/5
-                </span>
-                )
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {displayScores.map((s, idx) => (
-                  <div
-                    key={idx}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${s ? "glass text-primary border-primary/30" : "border border-white/10 border-dashed text-muted-foreground"}`}
-                  >
-                    {s ? s.score : "-"}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <ScoresPanel userId={user?.id ?? null} initialScores={scores} />
         </div>
 
         {/* Charity & Draw Card */}
