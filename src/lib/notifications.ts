@@ -56,9 +56,24 @@ export async function sendNotification(
   message: string,
   opts?: { ctaUrl?: string; ctaLabel?: string },
 ) {
-  await supabase
+  const payload = {
+    user_id: userId,
+    title,
+    message,
+    cta_url: opts?.ctaUrl ?? null,
+    cta_label: opts?.ctaLabel ?? null,
+  };
+
+  const { error: insertErr } = await supabase
     .from("notifications")
-    .insert({ user_id: userId, title, message });
+    .insert(payload);
+
+  // Backward-compatible fallback when CTA columns are not yet migrated.
+  if (insertErr && /cta_(url|label)/i.test(insertErr.message)) {
+    await supabase
+      .from("notifications")
+      .insert({ user_id: userId, title, message });
+  }
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -91,14 +106,29 @@ export async function sendBulkNotifications(
 ) {
   if (notifications.length === 0) return;
 
-  // Insert only the DB columns (strip ctaUrl/ctaLabel which are email-only)
-  await supabase.from("notifications").insert(
-    notifications.map((n) => ({
-      user_id: n.user_id,
-      title: n.title,
-      message: n.message,
-    })),
-  );
+  const payload = notifications.map((n) => ({
+    user_id: n.user_id,
+    title: n.title,
+    message: n.message,
+    cta_url: n.ctaUrl ?? null,
+    cta_label: n.ctaLabel ?? null,
+  }));
+
+  // Persist CTA fields so in-app notifications can render clickable links.
+  const { error: insertErr } = await supabase
+    .from("notifications")
+    .insert(payload);
+
+  // Backward-compatible fallback when CTA columns are not yet migrated.
+  if (insertErr && /cta_(url|label)/i.test(insertErr.message)) {
+    await supabase.from("notifications").insert(
+      notifications.map((n) => ({
+        user_id: n.user_id,
+        title: n.title,
+        message: n.message,
+      })),
+    );
+  }
 
   // Fire all emails concurrently
   await Promise.allSettled(

@@ -108,7 +108,10 @@ export default async function DashboardPage({
         </div>
 
         <div className="flex w-full sm:w-auto items-center justify-between sm:justify-start gap-3 sm:gap-4">
-          <NotificationBell initialNotifications={notifications} />
+          <NotificationBell
+            initialNotifications={notifications}
+            userId={user?.id ?? null}
+          />
 
           {subscriptionStatus === "active" ? (
             <div className="glass px-4 py-2 rounded-full border-primary/30 flex items-center gap-2 shadow-[0_0_15px_rgba(20,200,70,0.1)]">

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Info, Loader2 } from "lucide-react";
 import { addScore } from "./actions";
 
@@ -11,7 +12,11 @@ export default function ScoreForm({
 }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
   const isLocked = currentScoresCount >= 5;
+  const isSubmitting = loading || isPending;
 
   async function handleSubmit(formData: FormData) {
     if (isLocked) return;
@@ -21,6 +26,11 @@ export default function ScoreForm({
       const result = await addScore(formData);
       if (result?.error) {
         setError(result.error);
+      } else {
+        formRef.current?.reset();
+        startTransition(() => {
+          router.refresh();
+        });
       }
     } catch {
       setError("Failed to add score. Please try again.");
@@ -60,7 +70,12 @@ export default function ScoreForm({
         </div>
       )}
 
-      <form action={handleSubmit} className="flex gap-2">
+      <form
+        ref={formRef}
+        action={handleSubmit}
+        className="flex gap-2"
+        aria-busy={isSubmitting}
+      >
         <input
           type="number"
           name="score"
@@ -69,17 +84,24 @@ export default function ScoreForm({
           placeholder="Score (1-45)"
           required
           className="flex-1 bg-black/50 border border-white/10 rounded-lg px-4 py-2 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors disabled:opacity-50 text-white"
-          disabled={loading || isLocked}
+          disabled={isSubmitting || isLocked}
         />
         <button
           type="submit"
-          disabled={loading || isLocked}
+          disabled={isSubmitting || isLocked}
           className="bg-primary text-primary-foreground font-semibold px-6 py-2 rounded-lg neon-button disabled:opacity-50 disabled:grayscale transition-all inline-flex items-center justify-center gap-2"
         >
-          {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-          {loading ? "Adding score..." : "Add"}
+          {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+          {isSubmitting ? "Adding ticket..." : "Add"}
         </button>
       </form>
+
+      {isSubmitting && (
+        <div className="inline-flex items-center gap-2 text-xs text-primary/90">
+          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          Adding your ticket and updating your dashboard...
+        </div>
+      )}
 
       {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
     </div>
