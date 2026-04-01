@@ -52,7 +52,7 @@ export default function NotificationBell({ initialNotifications }: { initialNoti
         </button>
 
         {isOpen && (
-            <div className="absolute right-0 mt-2 w-80 bg-[#0f1117] border border-white/15 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] p-4 z-50 animate-in fade-in slide-in-from-top-4">
+            <div className="absolute right-0 mt-2 w-[min(20rem,calc(100vw-2rem))] sm:w-80 bg-[#0f1117] border border-white/15 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] p-4 z-50 animate-in fade-in slide-in-from-top-4">
                 <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-2">
                    <h3 className="font-bold text-lg text-white">Notifications</h3>
                    <span className="text-xs text-muted-foreground">{notifications.length} recent</span>

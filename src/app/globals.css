@@ -32,6 +32,11 @@
     background-image: var(--background-image-glow);
     background-attachment: fixed;
     font-family: ui-sans-serif, system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  html {
+    overflow-x: hidden;
   }
 }
 
@@ -69,5 +74,15 @@
   .neon-button:hover {
     box-shadow: 0 0 25px rgba(20, 200, 70, 0.4);
     transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 767px) {
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
   }
 }

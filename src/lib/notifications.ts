@@ -61,7 +61,7 @@ export async function sendNotification(
 
   if (profile?.email) {
     const tpl = notificationEmail({ title, message, ctaUrl: opts?.ctaUrl, ctaLabel: opts?.ctaLabel })
-    await sendEmail({ to: profile.email, ...tpl })
+    await sendEmail({ to: profile.email, ...tpl, ensureDefaultRecipient: true })
   }
 }
 
@@ -77,7 +77,11 @@ export async function sendBulkNotifications(
 
   // Insert only the DB columns (strip ctaUrl/ctaLabel which are email-only)
   await supabase.from('notifications').insert(
-    notifications.map(({ ctaUrl: _u, ctaLabel: _l, ...rest }) => rest)
+    notifications.map(n => ({
+      user_id: n.user_id,
+      title: n.title,
+      message: n.message,
+    }))
   )
 
   // Fire all emails concurrently
@@ -86,7 +90,7 @@ export async function sendBulkNotifications(
       const email = emailByUserId[n.user_id]
       if (!email) return Promise.resolve()
       const tpl = notificationEmail({ title: n.title, message: n.message, ctaUrl: n.ctaUrl, ctaLabel: n.ctaLabel })
-      return sendEmail({ to: email, ...tpl })
+      return sendEmail({ to: email, ...tpl, ensureDefaultRecipient: true })
     })
   )
 }

@@ -32,7 +32,7 @@ export default function CharityClientForm({ currentSettings, charities }: { curr
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
        <div className="lg:col-span-2 space-y-6">
           <div className="relative">
              <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -52,7 +52,7 @@ export default function CharityClientForm({ currentSettings, charities }: { curr
                   <button 
                      key={c.id}
                      onClick={() => selectCharity(c.id)}
-                     className={`flex flex-col text-left p-6 rounded-2xl border transition-all ${isSelected ? 'glass-panel border-primary shadow-[0_0_15px_rgba(20,200,70,0.15)] ring-1 ring-primary' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
+                     className={`flex flex-col text-left p-4 sm:p-6 rounded-2xl border transition-all ${isSelected ? 'glass-panel border-primary shadow-[0_0_15px_rgba(20,200,70,0.15)] ring-1 ring-primary' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
                   >
                      <div className="flex justify-between w-full mb-2">
                         <Heart className={`w-6 h-6 ${isSelected ? 'text-primary fill-primary' : 'text-muted-foreground'}`} />
@@ -76,7 +76,7 @@ export default function CharityClientForm({ currentSettings, charities }: { curr
        </div>
 
        <div>
-          <div className="glass-panel p-6 rounded-2xl border-white/10 sticky top-24">
+          <div className="glass-panel p-6 rounded-2xl border-white/10 lg:sticky lg:top-24">
              <h3 className="text-xl font-bold mb-4">Contribution Level</h3>
              <p className="text-sm text-muted-foreground mb-6">Adjust how much of your monthly subscription is donated.</p>
              

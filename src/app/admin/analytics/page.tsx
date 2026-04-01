@@ -64,7 +64,7 @@ export default async function AdminAnalyticsPage() {
   const totalCharityMRR = donationRows.reduce((s, r) => s + r.monthlyDonation, 0)
 
   return (
-    <div className="p-8 space-y-8 animate-in fade-in">
+    <div className="p-4 sm:p-8 space-y-8 animate-in fade-in">
       <div className="flex items-center gap-3">
         <BarChart3 className="w-8 h-8 text-primary" />
         <div>
@@ -109,7 +109,7 @@ export default async function AdminAnalyticsPage() {
               <span className="font-medium">Total Paid Out</span>
               <span className="text-primary font-bold text-xl">${totalPaidOut.toLocaleString()}</span>
             </div>
-            <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
               <div className="bg-black/30 p-3 rounded-xl border border-white/5">
                 <p className="text-sm text-muted-foreground">Match 5</p>
                 <p className="text-xl font-bold">{match5}</p>
@@ -174,7 +174,7 @@ export default async function AdminAnalyticsPage() {
               <tbody className="divide-y divide-white/5">
                 {donationRows.map((row, i) => (
                   <tr key={i} className="hover:bg-white/5 transition-colors">
-                    <td className="py-3 pr-4 text-white/80">{row.email}</td>
+                    <td className="py-3 pr-4 text-white/80 max-w-55 truncate">{row.email}</td>
                     <td className="py-3 pr-4 text-pink-400">{row.charityName}</td>
                     <td className="py-3 pr-4 text-right text-muted-foreground">{row.charityPerc}%</td>
                     <td className="py-3 text-right font-semibold text-primary">${row.monthlyDonation.toFixed(2)}</td>

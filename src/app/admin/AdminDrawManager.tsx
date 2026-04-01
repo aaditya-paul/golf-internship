@@ -68,7 +68,7 @@ export default function AdminDrawManager({ activeDraws }: { activeDraws: any[] }
                         <Loader2 className="w-4 h-4 animate-spin" /> Fetching subscription data...
                     </div>
                 ) : poolData ? (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div className="bg-black/30 p-3 rounded-xl">
                             <p className="text-muted-foreground text-xs mb-1">Active Subscribers</p>
                             <p className="font-bold text-lg">{poolData.activeSubs}</p>
@@ -91,7 +91,7 @@ export default function AdminDrawManager({ activeDraws }: { activeDraws: any[] }
                 ) : null}
 
                 {poolData && (
-                    <div className="grid grid-cols-3 gap-3 text-xs text-center">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-center">
                         {([5, 4, 3] as const).map(tier => (
                             <div key={tier} className="bg-white/5 rounded-lg p-2 border border-white/5">
                                 <p className="text-muted-foreground">Match {tier}</p>
@@ -110,7 +110,7 @@ export default function AdminDrawManager({ activeDraws }: { activeDraws: any[] }
                 {/* Month/Year picker */}
                 <div className="space-y-2">
                     <label className="text-sm text-muted-foreground">Draw Month & Year</label>
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                         <select
                             value={drawMonth}
                             onChange={e => setDrawMonth(Number(e.target.value))}

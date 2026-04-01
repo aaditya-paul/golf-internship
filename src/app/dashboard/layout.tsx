@@ -21,16 +21,16 @@ export default async function DashboardLayout({
     <div className="min-h-screen flex flex-col bg-background">
       {/* Top Navigation */}
       <header className="sticky top-0 z-40 w-full glass border-b border-white/5 backdrop-blur-3xl">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="mx-auto w-full max-w-6xl px-4 h-16 flex items-center justify-between gap-3">
           <Link href="/dashboard" className="flex items-center gap-2">
             <Trophy className="w-6 h-6 text-primary" />
-            <span className="font-bold text-lg tracking-tight">Swing&Win</span>
+            <span className="font-bold text-base sm:text-lg tracking-tight">Swing&Win</span>
           </Link>
 
-          <div className="flex items-center gap-4">
-            <div className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <div className="hidden sm:flex px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm items-center gap-2 min-w-0">
               <User className="w-4 h-4 text-muted-foreground" />
-              <span className="text-foreground/80">{user.email}</span>
+              <span className="text-foreground/80 truncate max-w-56">{user.email}</span>
             </div>
 
             <form action="/auth/signout" method="POST">
@@ -46,7 +46,7 @@ export default async function DashboardLayout({
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 container mx-auto px-4 py-8">{children}</main>
+      <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-6 sm:py-8">{children}</main>
     </div>
   );
 }

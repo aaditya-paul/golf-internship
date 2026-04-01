@@ -16,6 +16,18 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Email Notifications (Resend)
+
+Set these in `.env.local` to ensure notification delivery in unverified-domain setups:
+
+```bash
+RESEND_API_KEY=your_resend_key
+RESEND_FROM_EMAIL="Swing&Win <onboarding@resend.dev>"
+RESEND_DEFAULT_TO_EMAIL="you@yourdomain.com"
+```
+
+`RESEND_DEFAULT_TO_EMAIL` is used as a fallback/mirror recipient for notification emails.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

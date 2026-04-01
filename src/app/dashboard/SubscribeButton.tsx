@@ -86,7 +86,7 @@ export default function SubscribeButton() {
   return (
     <div className="space-y-3">
       {/* Plan Cards */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {plans.map(plan => (
           <button
             key={plan.key}

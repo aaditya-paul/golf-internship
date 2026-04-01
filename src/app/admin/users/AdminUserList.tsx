@@ -33,7 +33,7 @@ export default function AdminUserList({ initialProfiles }: { initialProfiles: an
              <div key={profile.id} className="glass border border-white/5 rounded-xl overflow-hidden">
                 {/* Header Row */}
                 <div 
-                   className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+                   className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer hover:bg-white/5 transition-colors"
                    onClick={() => setExpandedUser(isExpanded ? null : profile.id)}
                 >
                    <div className="flex items-center gap-4">
@@ -44,7 +44,7 @@ export default function AdminUserList({ initialProfiles }: { initialProfiles: an
                       </div>
                    </div>
                    
-                   <div className="flex items-center gap-6" onClick={e => e.stopPropagation()}>
+                     <div className="flex items-center gap-6 w-full sm:w-auto" onClick={e => e.stopPropagation()}>
                        <div className="flex items-center gap-2">
                           <Activity className={`w-4 h-4 ${profile.subscription_status === 'active' ? 'text-primary' : 'text-muted-foreground'}`} />
                           <select 
@@ -71,10 +71,10 @@ export default function AdminUserList({ initialProfiles }: { initialProfiles: an
                             <p className="text-xs text-muted-foreground">No scores tracked.</p>
                          ) : (
                             profile.scores?.map((score: any) => (
-                               <div key={score.id} className="flex justify-between items-center bg-white/5 px-3 py-2 rounded-lg">
-                                  <div className="flex gap-4">
+                               <div key={score.id} className="flex justify-between items-center bg-white/5 px-3 py-2 rounded-lg gap-3">
+                                  <div className="flex gap-4 min-w-0">
                                      <span className="font-bold text-primary w-8 text-center">{score.score}</span>
-                                     <span className="text-muted-foreground text-sm">{new Date(score.date).toLocaleDateString()}</span>
+                                     <span className="text-muted-foreground text-sm truncate">{new Date(score.date).toLocaleDateString()}</span>
                                   </div>
                                   <button 
                                      onClick={() => handleDeleteScore(score.id, profile.id)}

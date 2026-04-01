@@ -6,25 +6,51 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 // Once you verify "swing-and-win.com" in your Resend dashboard,
 // change this to: 'Swing&Win <notifications@swing-and-win.com>'
 const FROM = process.env.RESEND_FROM_EMAIL ?? 'Swing&Win <onboarding@resend.dev>'
+const DEFAULT_NOTIFICATION_EMAIL =
+  process.env.RESEND_DEFAULT_TO_EMAIL ?? process.env.DEFAULT_NOTIFICATION_EMAIL
+
+async function sendViaResend(to: string, subject: string, html: string) {
+  return resend.emails.send({ from: FROM, to, subject, html })
+}
 
 export async function sendEmail({
   to,
   subject,
   html,
+  ensureDefaultRecipient,
 }: {
   to: string
   subject: string
   html: string
+  ensureDefaultRecipient?: boolean
 }) {
   if (!process.env.RESEND_API_KEY) {
     console.warn('[Email] RESEND_API_KEY not set — skipping email send.')
     return
   }
+
+  const fallbackEmail = DEFAULT_NOTIFICATION_EMAIL?.trim()
+
   try {
-    const result = await resend.emails.send({ from: FROM, to, subject, html })
+    const result = await sendViaResend(to, subject, html)
     console.log('[Email] Sent to', to, '— id:', result.data?.id ?? 'unknown')
+
+    // Optional mirrored delivery so at least your default inbox receives notifications.
+    if (ensureDefaultRecipient && fallbackEmail && fallbackEmail !== to) {
+      const copy = await sendViaResend(fallbackEmail, subject, html)
+      console.log('[Email] Mirrored to default inbox', fallbackEmail, '— id:', copy.data?.id ?? 'unknown')
+    }
   } catch (err) {
     console.error('[Email] Failed to send email to', to, ':', err)
+
+    if (ensureDefaultRecipient && fallbackEmail) {
+      try {
+        const rescue = await sendViaResend(fallbackEmail, subject, html)
+        console.log('[Email] Fallback delivered to default inbox', fallbackEmail, '— id:', rescue.data?.id ?? 'unknown')
+      } catch (fallbackErr) {
+        console.error('[Email] Fallback delivery failed for', fallbackEmail, ':', fallbackErr)
+      }
+    }
   }
 }
 

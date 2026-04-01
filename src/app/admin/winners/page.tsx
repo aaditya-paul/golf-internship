@@ -31,14 +31,14 @@ export default async function AdminWinnersPage() {
     }
 
     return (
-       <div className="p-8 space-y-10 animate-in fade-in">
+       <div className="p-4 sm:p-8 space-y-10 animate-in fade-in">
           <div>
              <h1 className="text-3xl font-bold mb-2">Winner Management</h1>
              <p className="text-muted-foreground">All winners from published draws. Verify submitted scores against the draw results.</p>
           </div>
 
           {/* Summary Row */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
              <div className="glass-panel p-4 rounded-xl border-white/10 flex items-center gap-3">
                 <Clock className="w-5 h-5 text-yellow-400" />
                 <div>
@@ -100,7 +100,7 @@ export default async function AdminWinnersPage() {
                          </div>
 
                          {/* Stats Row */}
-                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                             <div className="bg-white/5 rounded-lg px-3 py-2">
                                <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Tier</p>
                                <p className="text-sm font-bold mt-0.5">{tierLabel(winner.tier)}</p>
@@ -168,6 +168,7 @@ export default async function AdminWinnersPage() {
                                   <p className="text-xs text-muted-foreground">Score entries were not captured for this draw. Only future publishes will include them.</p>
                                </div>
                             ) : (
+                               <div className="overflow-x-auto">
                                <table className="w-full text-sm">
                                   <thead>
                                      <tr className="text-left text-muted-foreground text-xs border-b border-white/5">
@@ -200,12 +201,13 @@ export default async function AdminWinnersPage() {
                                      })}
                                   </tbody>
                                </table>
+                               </div>
                             )}
                          </div>
 
                          {/* Actions */}
                          {winner.status === 'pending' && (
-                            <div className="flex gap-3">
+                            <div className="flex flex-col sm:flex-row gap-3">
                                <form action={async () => {
                                   "use server"
                                   await approveWinner(winner.id)

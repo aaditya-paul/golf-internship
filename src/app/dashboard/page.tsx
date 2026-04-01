@@ -77,7 +77,7 @@ export default async function DashboardPage({
           <p className="text-muted-foreground mt-1">Manage your scores, subscription, and charity contributions.</p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex w-full sm:w-auto items-center justify-between sm:justify-start gap-3 sm:gap-4">
             <NotificationBell initialNotifications={notifications} />
 
             {subscriptionStatus === 'active' ? (
@@ -102,12 +102,12 @@ export default async function DashboardPage({
             <h2 className="text-xl font-semibold">Your Scores</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <ScoreForm currentScoresCount={scores.length} />
 
             <div className="bg-white/5 rounded-xl p-4 border border-white/5">
               <h3 className="text-sm font-medium mb-3">Current Ticket (<span className="text-primary font-bold">{scores.length}/5</span>)</h3>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {displayScores.map((s, idx) => (
                   <div key={idx} className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${s ? 'glass text-primary border-primary/30' : 'border border-white/10 border-dashed text-muted-foreground'}`}>
                     {s ? s.score : '-'}
@@ -158,7 +158,7 @@ export default async function DashboardPage({
       </div>
 
       {/* Rules and Guide Section */}
-      <div className="glass-panel p-8 rounded-2xl border-white/10 space-y-6 mt-12">
+      <div className="glass-panel p-5 sm:p-8 rounded-2xl border-white/10 space-y-6 mt-10 sm:mt-12">
         <div className="flex items-center gap-3 border-b border-white/5 pb-4">
           <BookOpen className="w-6 h-6 text-primary" />
           <h2 className="text-xl font-semibold">Club Rules & Guide</h2>

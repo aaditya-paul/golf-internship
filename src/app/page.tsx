@@ -4,12 +4,18 @@ import { ArrowRight, Trophy, Heart } from "lucide-react";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col pt-16">
-      <header className="fixed top-0 w-full  z-50 px-6 py-4 flex justify-between items-center border-b-0 border-white/5 backdrop-blur-3xl bg-[#011006]/50">
+      <header className="fixed top-0 w-full z-50 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center border-b-0 border-white/5 backdrop-blur-3xl bg-[#011006]/50">
         <div className="flex items-center gap-2">
-          <Trophy className="w-6 h-6 text-primary" />
-          <span className="text-xl font-bold tracking-tighter">Swing&Win</span>
+          <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+          <span className="text-lg sm:text-xl font-bold tracking-tighter">Swing&Win</span>
         </div>
-        <nav className="flex gap-4 items-center">
+        <nav className="flex gap-2 sm:gap-4 items-center">
+          <Link
+            href="/how-it-works"
+            className="text-sm font-medium hover:text-primary transition-colors hidden sm:inline"
+          >
+            How It Works
+          </Link>
           <Link
             href="/login"
             className="text-sm font-medium hover:text-primary transition-colors"
@@ -18,24 +24,24 @@ export default function Home() {
           </Link>
           <Link
             href="/signup"
-            className="text-sm font-medium bg-primary text-primary-foreground px-4 py-2 rounded-full neon-button"
+            className="text-xs sm:text-sm font-medium bg-primary text-primary-foreground px-3 sm:px-4 py-2 rounded-full neon-button"
           >
             Join Now
           </Link>
         </nav>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 text-center mt-20 relative">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 text-center mt-16 sm:mt-20 relative">
         {/* Background glow effects */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 sm:w-150 sm:h-150 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="max-w-4xl space-y-8 relative">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-primary/20 text-primary text-sm font-medium mb-4">
+        <div className="max-w-4xl space-y-6 sm:space-y-8 relative">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border-primary/20 text-primary text-xs sm:text-sm font-medium mb-3 sm:mb-4">
             <Heart className="w-4 h-4" />
             <span>Play Golf. Win Big. Give Back.</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight">
             The Ultimate <br />
             <span className="neon-text text-transparent bg-clip-text bg-linear-to-r from-primary to-emerald-400">
               Golf Society
@@ -48,16 +54,16 @@ export default function Home() {
             want more out of every round.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-6 sm:pt-8">
             <Link
               href="/signup"
-              className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold text-lg neon-button"
+              className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg neon-button"
             >
               Get Started <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
-              href="/about"
-              className="flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg glass hover:bg-white/10 transition-colors"
+              href="/how-it-works"
+              className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg glass hover:bg-white/10 transition-colors"
             >
               How it works
             </Link>
@@ -65,8 +71,8 @@ export default function Home() {
         </div>
 
         {/* Feature Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full mt-32 mb-20">
-          <div className="glass-panel p-8 rounded-2xl relative overflow-hidden group">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl w-full mt-20 sm:mt-32 mb-12 sm:mb-20">
+          <div className="glass-panel p-6 sm:p-8 rounded-2xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             <Trophy className="w-8 h-8 text-primary mb-4" />
             <h3 className="text-xl font-bold mb-2">Track Scores</h3>
@@ -75,7 +81,7 @@ export default function Home() {
               unique monthly lottery ticket.
             </p>
           </div>
-          <div className="glass-panel p-8 rounded-2xl relative overflow-hidden group">
+          <div className="glass-panel p-6 sm:p-8 rounded-2xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             <svg
               className="w-8 h-8 text-primary mb-4"
@@ -96,7 +102,7 @@ export default function Home() {
               prizes from the community pool.
             </p>
           </div>
-          <div className="glass-panel p-8 rounded-2xl relative overflow-hidden group">
+          <div className="glass-panel p-6 sm:p-8 rounded-2xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             <Heart className="w-8 h-8 text-primary mb-4" />
             <h3 className="text-xl font-bold mb-2">Give Back</h3>

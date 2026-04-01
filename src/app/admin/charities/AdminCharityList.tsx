@@ -45,7 +45,7 @@ export default function AdminCharityList({ initialCharities }: { initialCharitie
        )}
 
        {isAdding && (
-           <div className="glass p-6 rounded-2xl border border-white/20 relative">
+           <div className="glass p-4 sm:p-6 rounded-2xl border border-white/20 relative">
                <button onClick={() => setIsAdding(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-white">
                    <X className="w-5 h-5" />
                </button>
@@ -70,7 +70,7 @@ export default function AdminCharityList({ initialCharities }: { initialCharitie
                           <textarea name="description" defaultValue={charity.description} required rows={3} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-sm" />
                           <input name="website" type="url" defaultValue={charity.website} className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-sm" />
                           
-                          <div className="flex gap-2">
+                                  <div className="flex flex-col sm:flex-row gap-2">
                              <button type="submit" disabled={loading} className="bg-primary text-black text-sm font-semibold px-4 py-2 rounded-lg">Update</button>
                              <button type="button" onClick={() => setEditingId(null)} className="bg-white/10 hover:bg-white/20 text-white text-sm px-4 py-2 rounded-lg">Cancel</button>
                           </div>
